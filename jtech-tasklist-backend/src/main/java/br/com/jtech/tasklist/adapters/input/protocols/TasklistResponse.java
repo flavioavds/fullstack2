@@ -12,18 +12,21 @@
 */
 package br.com.jtech.tasklist.adapters.input.protocols;
 
-import br.com.jtech.tasklist.application.core.domains.Tasklist;
-import br.com.jtech.tasklist.adapters.output.repositories.entities.TasklistEntity;
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.BeanUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import br.com.jtech.tasklist.adapters.output.repositories.entities.TasklistEntity;
+import br.com.jtech.tasklist.application.core.domains.Tasklist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.BeanUtils;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
 * class TasklistResponse 
@@ -37,12 +40,22 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TasklistResponse implements Serializable {
-    private String id;
+	private static final long serialVersionUID = 1L;
+	private UUID id;
+	private String name;
+    private String description;
+    private boolean completed;
+    private UUID userId;
+	
     List<TasklistResponse> responses;
 
     public static TasklistResponse of(Tasklist tasklist) {
         return TasklistResponse.builder()
                 .id(tasklist.getId())
+                .name(tasklist.getName())
+                .description(tasklist.getDescription())
+                .completed(tasklist.isCompleted())
+                .userId(tasklist.getUserId())
                 .build();
     }
 

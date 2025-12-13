@@ -1,0 +1,44 @@
+/*
+*  @(#)UserUseCase.java
+*
+*  Copyright (c) J-Tech Solucoes em Informatica.
+*  All Rights Reserved.
+*
+*  This software is the confidential and proprietary information of J-Tech.
+*  ("Confidential Information"). You shall not disclose such Confidential
+*  Information and shall use it only in accordance with the terms of the
+*  license agreement you entered into with J-Tech.
+*
+*/
+package br.com.jtech.tasklist.application.core.usecases.user;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import br.com.jtech.tasklist.application.core.domains.User;
+import br.com.jtech.tasklist.application.ports.input.user.UpdateUserInputGateway;
+import br.com.jtech.tasklist.application.ports.output.user.UpdateUserOutputGateway;
+
+/**
+* class UserUseCase  
+* 
+* user flavio.augusto  
+*/
+public class UpdateUserUseCase implements UpdateUserInputGateway {
+	
+    private final UpdateUserOutputGateway outputGateway;
+    
+    public UpdateUserUseCase(UpdateUserOutputGateway outputGateway) {
+		this.outputGateway = outputGateway;
+	}
+
+	@Override
+    public User update(UUID id, User user) {
+        return outputGateway.update(id, user);
+    }
+	
+	@Override
+    public Optional<User> findByEmail(String email) {
+        return outputGateway.findByEmail(email);
+    }
+}

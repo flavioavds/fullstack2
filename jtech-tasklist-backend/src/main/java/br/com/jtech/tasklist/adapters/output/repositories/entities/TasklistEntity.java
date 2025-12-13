@@ -12,13 +12,18 @@
 */
 package br.com.jtech.tasklist.adapters.output.repositories.entities;
 
+import java.util.UUID;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-
-import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
 * class TasklistEntity 
@@ -35,9 +40,32 @@ public class TasklistEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
-    //Others parameters...
+    @NotBlank(message = "Nome do Titulo não pode estar vazio")
+    @jakarta.validation.constraints.NotBlank
+    @jakarta.persistence.Column(nullable = false)
+    private String name;
+    
+    @NotBlank(message = "Descrição da Tarefa não pode estar vazio")
+    @jakarta.persistence.Column(length = 500)
+    private String desciption;
+    
+    @Builder.Default
+    @jakarta.persistence.Column(nullable = false)
+    private boolean completed = false;
+    
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+    
+    @Builder.Default
+    @jakarta.persistence.Column(nullable = false, updatable = false)
+    private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
+
+    @Builder.Default
+    @jakarta.persistence.Column(nullable = false)
+    private java.time.LocalDateTime updatedAt = java.time.LocalDateTime.now();
 
 }
