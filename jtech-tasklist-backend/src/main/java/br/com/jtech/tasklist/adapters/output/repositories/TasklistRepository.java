@@ -12,11 +12,13 @@
 */
 package br.com.jtech.tasklist.adapters.output.repositories;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import br.com.jtech.tasklist.adapters.output.repositories.entities.TasklistEntity;
-
+import java.util.List;
 import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import br.com.jtech.tasklist.adapters.output.repositories.entities.TasklistEntity;
 
 /**
 * class TasklistRepository 
@@ -25,5 +27,7 @@ import java.util.UUID;
 */
 @Repository
 public interface TasklistRepository extends JpaRepository<TasklistEntity, UUID> {
+	
+	List<TasklistEntity> findByUserId(UUID userId);
     
 }

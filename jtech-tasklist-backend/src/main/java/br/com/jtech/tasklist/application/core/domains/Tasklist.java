@@ -12,12 +12,19 @@
 */
 package br.com.jtech.tasklist.application.core.domains;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import br.com.jtech.tasklist.adapters.input.protocols.TasklistRequest;
 import br.com.jtech.tasklist.adapters.output.repositories.entities.TasklistEntity;
-import lombok.*;
-
-import java.util.UUID;
-import java.util.List;
+import br.com.jtech.tasklist.adapters.output.repositories.entities.UserEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 
 /**
@@ -33,27 +40,59 @@ import java.util.List;
 @AllArgsConstructor
 public class Tasklist {
 
-    private String id;
+    private UUID id;
+    private String name;
+    private String description;
+    private boolean completed;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private UUID userId;
 
     public static List<Tasklist> of(List<TasklistEntity> entities) {
         return entities.stream().map(Tasklist::of).toList();
      }
-
+    
     public TasklistEntity toEntity() {
-        return TasklistEntity.builder()
-            .id(UUID.fromString(getId()))
+        TasklistEntity entity = TasklistEntity.builder()
+            .id(this.id != null ? this.id : null)
+            .name(this.name)
+            .desciption(this.description)
+            .completed(this.completed)
+            .createdAt(this.createdAt != null ? this.createdAt : LocalDateTime.now())
+            .updatedAt(this.updatedAt != null ? this.updatedAt : LocalDateTime.now())
             .build();
-     }
+
+        if (this.userId != null) {
+            UserEntity user = new UserEntity();
+            user.setId(this.userId);
+            entity.setUser(user);
+        }
+
+        return entity;
+    }
 
     public static Tasklist of(TasklistEntity entity) {
         return Tasklist.builder()
-            .id(entity.getId().toString())
+            .id(entity.getId())
+            .name(entity.getName())
+            .description(entity.getDesciption())
+            .completed(entity.isCompleted())
+            .createdAt(entity.getCreatedAt())
+            .updatedAt(entity.getUpdatedAt())
+            .userId(entity.getUser() != null ? entity.getUser().getId() : null)
             .build();
      }
 
-    public static Tasklist of(TasklistRequest request) {
+    public static Tasklist of(TasklistRequest request, UUID loggedUserId) {
         return Tasklist.builder()
             .id(request.getId())
+            .name(request.getName())
+            .description(request.getDescription())
+            .completed(false) 
+            .userId(loggedUserId) 
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
-     }
+    }
+
  }

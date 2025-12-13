@@ -12,14 +12,18 @@
  */
 package br.com.jtech.tasklist.adapters.input.protocols;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
+import br.com.jtech.tasklist.application.core.domains.Tasklist;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
 * class TasklistRequest 
@@ -32,7 +36,27 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TasklistRequest implements Serializable {
-    private String id;
+	private static final long serialVersionUID = 1L;
+
+	private UUID id;
+	
+	@NotBlank(message = "Nome do titulo não pode estar vazio")
+	private String name;
+	
+	@NotBlank(message = "Destrição da Tarefa não pode estar vazio")
+    private String description;
+    private boolean completed;
+    private UUID userId;
 
     private List<TasklistRequest> requests;
+    
+    public Tasklist toDomain() {
+    	return Tasklist.builder()
+    			.id(this.id)
+    			.name(this.name)
+    			.description(this.description)
+    			.completed(this.completed)
+    			.userId(this.userId)
+    			.build();
+    }
 }

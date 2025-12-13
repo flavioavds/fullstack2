@@ -12,6 +12,9 @@
 */
 package br.com.jtech.tasklist.config.infra.swagger;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -20,18 +23,20 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
+//@OpenAPIDefinition(info = @Info(title = "Swagger OpenApi Tasklist", version = "1", description = "API desenvolvido para testes de cadastro de Usuario e Tasklist"))
 @OpenAPIDefinition(
-        info = @Info(contact = @Contact(name = "Jtech Solucoes em Informatica",
-                email = "helder.puia@veolia.com"), title = "???",
+        info = @Info(
+        		title = "Jtech Solucoes em Informatica",
+        		contact = @Contact(name = "Jtech Solucoes em Informatica",
+                email = "helder.puia@veolia.com"),
                 termsOfService = "www.jtech.com.br/terms-and-condition",
                 description = "${api.description}",
                 version = "${api.version}"),
         servers = {
-                @Server(url = "http://localhost:8081/${spring.application.name}", description = "Development"),
+        		@Server(url = "http://localhost:${server.port}/", description = "Development"),
+                //@Server(url = "http://localhost:8081/${spring.application.name}", description = "Development"),
                 @Server(url = "${api.url.homologation}/${spring.application.name}", description = "Homologation"),
                 @Server(url = "${api.url.production}", description = "Production")
         }
