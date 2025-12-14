@@ -56,7 +56,7 @@ public class TokenEntity {
 	public boolean expired;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	public UserEntity user;
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserEntity user;
 
 }

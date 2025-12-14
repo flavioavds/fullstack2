@@ -35,8 +35,8 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
                 description = "${api.description}",
                 version = "${api.version}"),
         servers = {
-        		@Server(url = "http://localhost:${server.port}/", description = "Development"),
-                //@Server(url = "http://localhost:8081/${spring.application.name}", description = "Development"),
+        		//@Server(url = "http://localhost:${server.port}/", description = "Development"),
+                @Server(url = "http://localhost:8081/${spring.application.name}", description = "Development"),
                 @Server(url = "${api.url.homologation}/${spring.application.name}", description = "Homologation"),
                 @Server(url = "${api.url.production}", description = "Production")
         }

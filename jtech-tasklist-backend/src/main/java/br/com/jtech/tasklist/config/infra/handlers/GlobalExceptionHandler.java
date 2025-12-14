@@ -29,6 +29,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import br.com.jtech.tasklist.config.infra.exceptions.ApiError;
 import br.com.jtech.tasklist.config.infra.exceptions.ApiSubError;
@@ -181,5 +182,14 @@ public class GlobalExceptionHandler {
     	return build(HttpStatus.BAD_REQUEST,
                 "Erro inesperado no processamento da requisição",
                 ex.getLocalizedMessage());
+    }
+    
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResourceFound(NoResourceFoundException ex) {
+        ApiError error = new ApiError(HttpStatus.NOT_FOUND);
+        error.setTimestamp(LocalDateTime.now());
+        error.setMessage("Recurso não encontrado");
+        error.setDebugMessage(ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

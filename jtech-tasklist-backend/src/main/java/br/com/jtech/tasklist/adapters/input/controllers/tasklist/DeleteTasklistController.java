@@ -65,7 +65,7 @@ public class DeleteTasklistController {
 	                name = "id",
 	                description = "Identificador único da lista de tarefas",
 	                required = true,
-	                example = "10"
+	                example = "id"
 	            )
 	        },
 	        responses = {

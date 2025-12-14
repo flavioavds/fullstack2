@@ -23,8 +23,25 @@
       <!-- Campo de senha apenas se showPassword for true -->
       <div class="field" v-if="showPassword">
         <label>Nova Senha</label>
-        <input v-model="password" type="password" placeholder="Digite a nova senha" />
-        <small>ao Realizar alteração de senha será direcionado para pagina de login em 5 segundos!</small>
+        <div class="password-wrapper">
+          <input
+            v-model="password"
+            :type="showPasswordField ? 'text' : 'password'"
+            placeholder="Digite a nova senha"
+          />
+          <button type="button" class="eye-btn" @click="showPasswordField = !showPasswordField">
+            <svg v-if="showPasswordField" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <small>Ao realizar alteração de senha será direcionado para página de login em 5 segundos!</small>
       </div>
 
       <button type="submit" :disabled="loading">
@@ -63,6 +80,7 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const success = ref<string | null>(null)
 const showPassword = ref(false)
+const showPasswordField = ref(false)
 const needsLogin = ref(false)
 const countdown = ref(5)
 
@@ -80,15 +98,12 @@ async function handleUpdate() {
   countdown.value = 5
 
   try {
-    // Mantém os campos obrigatórios
     const payload: Record<string, string> = { name: name.value, email: email.value }
 
     const emailChanged = email.value !== authStore.user?.email
     const passwordChanged = showPassword.value && password.value
 
-    if (passwordChanged) {
-      payload.password = password.value
-    }
+    if (passwordChanged) payload.password = password.value
 
     const { data } = await http.put('/user/me', payload, {
       headers: { Authorization: `Bearer ${authStore.token}` }
@@ -111,21 +126,17 @@ async function handleUpdate() {
 
     password.value = ''
     showPassword.value = false
+    showPasswordField.value = false
   } catch (err: unknown) {
     if (err instanceof AxiosError) {
       error.value = err.response?.data?.message || 'Erro ao atualizar'
-
-      // Redireciona se 401
       if (err.response?.status === 401) {
         alert('Sessão expirada. Você será redirecionado para login.')
         authStore.clear()
         router.push({ name: 'login' })
       }
-    } else if (err instanceof Error) {
-      error.value = err.message
-    } else {
-      error.value = 'Erro desconhecido'
-    }
+    } else if (err instanceof Error) error.value = err.message
+    else error.value = 'Erro desconhecido'
   } finally {
     loading.value = false
   }
@@ -154,9 +165,47 @@ function goBack() {
 }
 
 input {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  box-sizing: border-box;
+}
+
+/* SENHA */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 36px;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.eye-btn:hover {
+  color: #2563eb;
+}
+
+.eye-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 button {

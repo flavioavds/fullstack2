@@ -59,6 +59,7 @@ public class UpdateUserController {
 	        summary = "Atualizar usuário",
 	        description = """
 	            Atualiza os dados de um usuário existente no sistema.
+	            Em caso de Atualização de email ou senha será necessario logar novamente (Evite problemas com token)
 	            
 	            Observações:
 	            - Endpoint protegido (JWT obrigatório)
@@ -133,6 +134,7 @@ public class UpdateUserController {
 	    summary = "Atualizar dados do usuário logado",
 	    description = """
 	        Atualiza os dados do usuário logado no sistema.
+	        Em caso de Atualização de email ou senha será necessario logar novamente (Evite problemas com token)
 	        
 	        Observações:
 	        - Endpoint protegido (JWT obrigatório)

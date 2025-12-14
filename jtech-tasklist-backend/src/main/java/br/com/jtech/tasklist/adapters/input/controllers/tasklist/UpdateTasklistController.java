@@ -76,7 +76,7 @@ public class UpdateTasklistController {
 	                    name = "Atualização de Tasklist",
 	                    value = """
 	                        {
-	                          "title": "Trabalho Atualizado",
+	                          "name": "Trabalho Atualizado",
 	                          "description": "Tarefas do trabalho atualizadas"
 	                        }
 	                        """
@@ -95,7 +95,7 @@ public class UpdateTasklistController {
 	                        value = """
 	                            {
 	                              "id": "550e8400-e29b-41d4-a716-446655440000",
-	                              "title": "Trabalho Atualizado",
+	                              "name": "Trabalho Atualizado",
 	                              "description": "Tarefas do trabalho atualizadas"
 	                            }
 	                            """

@@ -25,6 +25,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.jtech.tasklist.adapters.input.protocols.TasklistResponse;
 import br.com.jtech.tasklist.application.ports.input.tasklist.CompletedTasklistInputGateway;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +50,57 @@ public class CompletedTasklistController {
 	private final CompletedTasklistInputGateway completedTasklistInputGateway;
 
     @PutMapping("/{id}/complete")
+
+    @Operation(
+            operationId = "02_complete_tasklist",
+            summary = "Marcar lista de tarefas como concluída",
+            description = "Marca uma lista de tarefas como concluída para o usuário logado.\n" +
+                          "Observações:\n" +
+                          "- Endpoint protegido (JWT obrigatório)\n" +
+                          "- Apenas o proprietário da lista pode marcá-la como concluída",
+            responses = {
+                @ApiResponse(
+                    responseCode = "200",
+                    description = "Lista de tarefas concluída com sucesso",
+                    content = @Content(
+                        mediaType = "application/json",
+                        schema = @Schema(implementation = TasklistResponse.class),
+                        examples = @ExampleObject(
+                            name = "Tasklist Concluída",
+                            value = """
+                                {
+                                  "id": "b0d1faaf-6e6e-4ab9-927a-1cdd0a864437",
+                                  "name": "Minha lista que quero comprar",
+                                  "description": "Preciso de uma compra de café",
+                                  "completed": true,
+                                  "userId": "3543593c-9fff-426e-994e-fe5609e45718"
+                                }
+                                """
+                        )
+                    )
+                ),
+                @ApiResponse(
+                    responseCode = "400",
+                    description = "Dados inválidos ou obrigatórios não informados"
+                ),
+                @ApiResponse(
+                    responseCode = "401",
+                    description = "Usuário não autenticado"
+                ),
+                @ApiResponse(
+                    responseCode = "403",
+                    description = "Usuário não autorizado"
+                ),
+                @ApiResponse(
+                    responseCode = "404",
+                    description = "Lista de tarefas não encontrada"
+                ),
+                @ApiResponse(
+                    responseCode = "500",
+                    description = "Erro interno no servidor"
+                )
+            }
+    )
     public ResponseEntity<TasklistResponse> complete(@PathVariable("id") UUID tasklistId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
