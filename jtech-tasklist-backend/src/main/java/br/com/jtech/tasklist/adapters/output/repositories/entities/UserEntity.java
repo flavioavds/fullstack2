@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.jtech.tasklist.adapters.output.repositories.entities.roles.Role;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -105,8 +106,11 @@ public class UserEntity implements UserDetails{
 	@Column(nullable = false)
 	private LocalDateTime updateAt = LocalDateTime.now();
 	
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<TasklistEntity> tasklists;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TokenEntity> tokens;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

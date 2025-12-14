@@ -28,7 +28,7 @@ public class WebSecurityConfig {
 			"/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
 			"/configuration/security", "/swagger-ui.html", "/webjars/**",
 			"/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**",
-			"/swagger-ui.html","swagger-ui/**"
+			"/swagger-ui.html","swagger-ui/**", "/doc/tasklist/**", "/tasklist/doc/tasklist/**"
 	};
 	
 	private final AuthEntryPointJwt unauthorizeHandler;	
@@ -75,7 +75,7 @@ public class WebSecurityConfig {
 	    .authorizeHttpRequests(auth -> auth
 	        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 	        .requestMatchers("/api/v1/auth/**").permitAll()
-	        .requestMatchers("/doc/tasklist/**").permitAll()
+	        .requestMatchers("/tasklist/api/v1/auth/**").permitAll()
 	        .requestMatchers(AUTH_WHITELIST).permitAll()
 	        .anyRequest().authenticated()
 	    		);

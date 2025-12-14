@@ -12,6 +12,7 @@
 */
 package br.com.jtech.tasklist.adapters.input.controllers.user;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.jtech.tasklist.application.core.domains.User;
 import br.com.jtech.tasklist.application.ports.input.user.DeleteUserInputGateway;
+import br.com.jtech.tasklist.config.infra.exceptions.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -81,7 +84,9 @@ public class DeleteUserController {
 		            )
 		        }
 		    )
-	 public ResponseEntity<Void> delete(@PathVariable UUID id) {
+	 public ResponseEntity<SuccessResponse> delete(
+		        @Parameter(description = "ID do usuário a ser excluído", required = true)
+		        @PathVariable("id") UUID id) {
 
 		    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		    String loggedUserEmail = authentication.getName();
@@ -94,7 +99,13 @@ public class DeleteUserController {
 		    }
 
 		    deleteUserInputGateway.delete(id);
-		    return ResponseEntity.noContent().build();
-		}
 
+		    SuccessResponse response = new SuccessResponse(
+		            "SUCCESS",
+		            "Usuário excluído com sucesso",
+		            LocalDateTime.now()
+		    );
+
+		    return ResponseEntity.ok(response);
+		}
 }

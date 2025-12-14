@@ -18,23 +18,62 @@
           />
         </div>
 
-        <div class="field">
+        <div class="field password-field">
           <label>Senha</label>
-          <input
-            v-model="password"
-            type="password"
-            placeholder="••••••••"
-            required
-          />
+          <div class="password-wrapper">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="••••••••"
+              required
+            />
+            <button type="button" class="eye-btn" @click="showPassword = !showPassword">
+              <svg
+                v-if="showPassword"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <line
+                  x1="3"
+                  y1="3"
+                  x2="21"
+                  y2="21"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button type="submit" :disabled="loading">
           {{ loading ? 'Entrando...' : 'Entrar' }}
         </button>
 
-        <p v-if="error" class="error">
-          {{ error }}
-        </p>
+        <p v-if="error" class="error">{{ error }}</p>
       </form>
     </div>
   </div>
@@ -47,6 +86,7 @@ import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const loading = ref(false)
 const error = ref<string | null>(null)
 
@@ -67,7 +107,6 @@ async function handleLogin() {
   }
 }
 
-// Função para voltar para home
 function goHome() {
   router.push('/')
 }
@@ -80,10 +119,9 @@ function goHome() {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #eef2f7, #d9e2ec);
-  position: relative; /* necessário para posicionar o botão Home */
+  position: relative;
 }
 
-/* Botão Home fixo no topo direito */
 .home-btn {
   position: absolute;
   top: 20px;
@@ -140,6 +178,7 @@ input {
   border: 1px solid #d1d5db;
   border-radius: 8px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -148,7 +187,7 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-button[type="submit"] {
+button[type='submit'] {
   width: 100%;
   height: 48px;
   margin-top: 10px;
@@ -171,5 +210,41 @@ button:disabled {
   text-align: center;
   color: #dc2626;
   font-size: 14px;
+}
+
+/* SENHA */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 36px; /* espaço para o botão */
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.eye-btn:hover {
+  color: #2563eb;
+}
+
+.eye-btn svg {
+  width: 20px;
+  height: 20px;
 }
 </style>

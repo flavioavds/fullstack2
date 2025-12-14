@@ -1,28 +1,43 @@
 <template>
   <div class="auth-page">
-    <!-- Botão Home no topo direito -->
     <button class="home-btn" @click="goHome">Home</button>
 
     <div class="card">
       <h1>Criar sua conta</h1>
-      <p class="subtitle">
-        Comece agora a organizar suas tarefas e ganhar foco no seu dia a dia.
-      </p>
+      <p class="subtitle">Comece agora a organizar suas tarefas e ganhar foco no seu dia a dia.</p>
 
       <form @submit.prevent="register">
         <div class="field">
           <label>Nome</label>
-          <input v-model="form.name" type="text" required />
+          <input v-model="form.name" type="text" placeholder="Seu nome" required />
         </div>
 
         <div class="field">
           <label>Email</label>
-          <input v-model="form.email" type="email" required />
+          <input v-model="form.email" type="email" placeholder="seu@email.com" required />
         </div>
 
-        <div class="field">
+        <div class="field password-field">
           <label>Senha</label>
-          <input v-model="form.password" type="password" required />
+          <div class="password-wrapper">
+            <input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="••••••••"
+              required
+            />
+            <button type="button" class="eye-btn" @click="showPassword = !showPassword">
+              <svg v-if="showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477-1 12-1s10 4.477 10 10c0 1.05-.172 2.062-.494 3.016M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button type="submit" :disabled="loading">
@@ -30,9 +45,7 @@
         </button>
 
         <p class="error" v-if="error">{{ error }}</p>
-        <p class="success" v-if="success">
-          Conta criada com sucesso. Você já pode entrar.
-        </p>
+        <p class="success" v-if="success">Conta criada com sucesso. Você já pode entrar.</p>
       </form>
 
       <div class="footer">
@@ -46,9 +59,11 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios, { AxiosError } from 'axios'
+import http from '@/api/http'
+import { AxiosError } from 'axios'
 
 const router = useRouter()
+const showPassword = ref(false)
 
 const form = reactive({
   name: '',
@@ -66,7 +81,7 @@ async function register() {
   loading.value = true
 
   try {
-    await axios.post('http://localhost:8081/api/v1/auth/register', form)
+    await http.post('/auth/register', form)
     success.value = true
     setTimeout(() => router.push('/login'), 1500)
   } catch (err: unknown) {
@@ -74,7 +89,7 @@ async function register() {
       if (err.response?.status === 409) {
         error.value = 'Este email já está cadastrado.'
       } else {
-        error.value = 'Esse Email já está cadastrado. Entre com seu Login!'
+        error.value = 'Erro ao criar conta.'
       }
     } else {
       error.value = 'Erro inesperado.'
@@ -88,7 +103,6 @@ function goLogin() {
   router.push('/login')
 }
 
-// Nova função para redirecionar para Home
 function goHome() {
   router.push('/')
 }
@@ -101,10 +115,9 @@ function goHome() {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative; /* necessário para posicionar o botão Home */
+  position: relative;
 }
 
-/* Botão Home fixo no topo direito */
 .home-btn {
   position: absolute;
   top: 20px;
@@ -127,7 +140,7 @@ function goHome() {
   background: white;
   border-radius: 16px;
   padding: 32px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 h1 {
@@ -153,13 +166,14 @@ label {
 input {
   width: 100%;
   height: 46px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
   padding: 0 12px;
   font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  box-sizing: border-box;
 }
 
-button[type="submit"] {
+button[type='submit'] {
   width: 100%;
   height: 48px;
   margin-top: 12px;
@@ -195,5 +209,46 @@ button:disabled {
   color: #2563eb;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* SENHA */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  height: 46px;
+  padding: 0 36px 0 12px; /* espaço para o botão */
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  box-sizing: border-box;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.eye-btn:hover {
+  color: #2563eb;
+}
+
+.eye-btn svg {
+  width: 20px;
+  height: 20px;
 }
 </style>

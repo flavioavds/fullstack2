@@ -71,7 +71,7 @@ public class GetTasklistByIdController {
 		                name = "id",
 		                description = "Identificador único da lista de tarefas (UUID)",
 		                required = true,
-		                example = "550e8400-e29b-41d4-a716-446655440000"
+		                example = "id"
 		            )
 		        },
 		        responses = {
