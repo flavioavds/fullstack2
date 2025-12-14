@@ -1,23 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import type { RouteRecordRaw } from 'vue-router'
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('@/views/HomeView.vue'),
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/LoginView.vue'),
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/RegisterView.vue'),
+  },
+  {
+    path: '/app',
+    name: 'dashboard',
+    component: () => import('@/views/DashboardView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/tasklist/create',
+    name: 'createTasklist',
+    component: () => import('@/views/TasklistCreateView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/tasklist/edit/:id',
+    name: 'editTasklist',
+    component: () => import('@/views/TasklistEditView.vue'),
+    meta: { requiresAuth: true },
+    props: true,
+  },
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-  ],
+  history: createWebHistory(),
+  routes,
+})
+
+router.beforeEach((to, _, next) => {
+  const token = localStorage.getItem('token')
+  if (to.meta.requiresAuth && !token) return next({ name: 'login' })
+  next()
 })
 
 export default router
