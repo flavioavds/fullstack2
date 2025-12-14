@@ -1,5 +1,8 @@
 <template>
   <div class="login-page">
+    <!-- Botão Home no topo direito -->
+    <button class="home-btn" @click="goHome">Home</button>
+
     <div class="login-card">
       <h1>TaskList</h1>
       <p class="subtitle">Acesse sua conta</p>
@@ -36,6 +39,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'
@@ -62,7 +66,13 @@ async function handleLogin() {
     loading.value = false
   }
 }
+
+// Função para voltar para home
+function goHome() {
+  router.push('/')
+}
 </script>
+
 <style scoped>
 .login-page {
   min-height: 100vh;
@@ -70,6 +80,25 @@ async function handleLogin() {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #eef2f7, #d9e2ec);
+  position: relative; /* necessário para posicionar o botão Home */
+}
+
+/* Botão Home fixo no topo direito */
+.home-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-btn:hover {
+  opacity: 0.9;
 }
 
 .login-card {
@@ -119,7 +148,7 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-button {
+button[type="submit"] {
   width: 100%;
   height: 48px;
   margin-top: 10px;
@@ -130,15 +159,6 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-button:hover:not(:disabled) {
-  background: #1d4ed8;
-}
-
-button:active:not(:disabled) {
-  transform: translateY(1px);
 }
 
 button:disabled {

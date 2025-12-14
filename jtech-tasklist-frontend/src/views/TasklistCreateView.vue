@@ -11,16 +11,21 @@
       <button type="submit" :disabled="loading">
         {{ loading ? 'Criando...' : 'Criar' }}
       </button>
-
-      <p v-if="error" class="error">{{ error }}</p>
     </form>
+
+    <!-- Botão de voltar para o dashboard -->
+    <button type="button" class="back-btn" @click="goBack">
+      ← Voltar para o Dashboard
+    </button>
+
+    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import http from '@/api/http' // usa o arquivo de configuração axios
+import http from '@/api/http'
 import { useAuthStore } from '@/stores/auth.store'
 import { AxiosError } from 'axios'
 
@@ -37,17 +42,14 @@ async function handleCreate() {
   error.value = null
 
   try {
-    // Aqui não repetimos /api/v1 porque já está no baseURL do http
     await http.post(
       '/tasklists',
       { name: name.value, description: description.value },
       { headers: { Authorization: `Bearer ${authStore.token}` } }
     )
 
-    // Redireciona para dashboard
     router.push({ name: 'dashboard' })
   } catch (err: unknown) {
-    // Tratamento de erro sem usar any
     if (err instanceof AxiosError) {
       error.value = err.response?.data?.message || 'Erro ao criar lista'
     } else if (err instanceof Error) {
@@ -58,6 +60,11 @@ async function handleCreate() {
   } finally {
     loading.value = false
   }
+}
+
+// Função de voltar para o dashboard
+function goBack() {
+  router.push({ name: 'dashboard' })
 }
 </script>
 
@@ -101,17 +108,35 @@ button {
   width: 100%;
   padding: 12px;
   font-size: 16px;
-  background: #2563eb;
-  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
+button[type="submit"] {
+  background: #2563eb;
+  color: white;
+}
+
+button[type="submit"]:hover {
+  background: #1d4ed8;
+}
+
 button:disabled {
   background: #93c5fd;
   cursor: not-allowed;
+}
+
+/* Botão de voltar para dashboard */
+.back-btn {
+  margin-top: 10px;
+  background: #6b7280;
+  color: white;
+}
+
+.back-btn:hover {
+  background: #4b5563;
 }
 
 .error {
