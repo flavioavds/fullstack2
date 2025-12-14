@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth.store'
 import router from '@/router'
 
 const http = axios.create({
@@ -25,6 +26,23 @@ http.interceptors.response.use(
 
       authStore.logout()
       router.push('/login')
+    }
+
+    return Promise.reject(error)
+  }
+)
+
+http.interceptors.response.use(
+  response => response,
+  error => {
+    const authStore = useAuthStore()
+
+    if (error.response?.status === 401) {
+      alert('Sessão expirada. Você será redirecionado para login.')
+
+      authStore.clear()
+
+      router.push({ name: 'login' })
     }
 
     return Promise.reject(error)

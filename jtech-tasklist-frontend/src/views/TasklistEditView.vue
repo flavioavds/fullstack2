@@ -20,15 +20,10 @@
         </button>
       </form>
 
-      <button
-        class="complete-btn"
-        @click="handleComplete"
-        :disabled="tasklist?.completed"
-      >
-        {{ tasklist?.completed ? 'Concluída' : 'Marcar como concluída' }}
+      <!-- Botão de voltar para o dashboard -->
+      <button type="button" class="back-btn" @click="goBack">
+        ← Voltar para o Dashboard
       </button>
-
-      <button class="delete-btn" @click="handleDelete">Excluir lista</button>
 
       <p v-if="error" class="error">{{ error }}</p>
     </div>
@@ -97,6 +92,7 @@ async function handleUpdate() {
     )
     tasklist.value = data
     alert('Lista atualizada com sucesso!')
+    router.push({ name: 'dashboard' })
   } catch (err: unknown) {
     if (err instanceof AxiosError) {
       error.value = err.response?.data?.message || 'Erro ao atualizar lista'
@@ -110,33 +106,9 @@ async function handleUpdate() {
   }
 }
 
-// Finalizar Tasklist
-async function handleComplete() {
-  if (!tasklist.value || tasklist.value.completed) return
-  try {
-    const { data } = await http.put<Tasklist>(
-      `/tasklists/${tasklistId}/complete`,
-      {},
-      { headers: { Authorization: `Bearer ${authStore.token}` } }
-    )
-    tasklist.value.completed = data.completed
-  } catch {
-    error.value = 'Erro ao marcar como concluída'
-  }
-}
-
-// Excluir Tasklist
-async function handleDelete() {
-  if (!confirm('Deseja realmente excluir esta lista?')) return
-  try {
-    await http.delete(`/tasklists/${tasklistId}`, {
-      headers: { Authorization: `Bearer ${authStore.token}` },
-    })
-    alert('Lista excluída com sucesso!')
-    router.push({ name: 'dashboard' })
-  } catch {
-    error.value = 'Erro ao excluir lista'
-  }
+// Função de voltar para o dashboard
+function goBack() {
+  router.push({ name: 'dashboard' })
 }
 </script>
 
@@ -192,14 +164,24 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.complete-btn {
-  background: #16a34a;
+/* Botão de salvar */
+button[type="submit"] {
+  background: #2563eb;
   color: white;
 }
 
-.delete-btn {
-  background: #dc2626;
+button[type="submit"]:hover {
+  background: #1d4ed8;
+}
+
+/* Botão de voltar para dashboard */
+.back-btn {
+  background: #6b7280;
   color: white;
+}
+
+.back-btn:hover {
+  background: #4b5563;
 }
 
 .error {

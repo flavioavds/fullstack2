@@ -48,5 +48,5 @@ api:
     production: ${PRODUCTION_URI:http://${spring.application.name}.jtech.com.br}
 jwt:
     secret: 452948404D635166546A576E5A7234753778214125442A472D4A614E64526755
-    expiration: 300000
-    refresh-token: 600000
+    expiration: 10800000
+    refresh-token: 864000000

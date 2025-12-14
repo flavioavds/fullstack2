@@ -1,5 +1,8 @@
 <template>
   <div class="auth-page">
+    <!-- Botão Home no topo direito -->
+    <button class="home-btn" @click="goHome">Home</button>
+
     <div class="card">
       <h1>Criar sua conta</h1>
       <p class="subtitle">
@@ -39,6 +42,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -66,22 +70,30 @@ async function register() {
     success.value = true
     setTimeout(() => router.push('/login'), 1500)
   } catch (err: unknown) {
-  if (err instanceof AxiosError) {
-    if (err.response?.status === 409) {
-      error.value = 'Este email já está cadastrado.'
+    if (err instanceof AxiosError) {
+      if (err.response?.status === 409) {
+        error.value = 'Este email já está cadastrado.'
+      } else {
+        error.value = 'Esse Email já está cadastrado. Entre com seu Login!'
+      }
     } else {
-      error.value = 'Erro ao criar conta.'
+      error.value = 'Erro inesperado.'
     }
-  } else {
-    error.value = 'Erro inesperado.'
+  } finally {
+    loading.value = false
   }
-}
 }
 
 function goLogin() {
   router.push('/login')
 }
+
+// Nova função para redirecionar para Home
+function goHome() {
+  router.push('/')
+}
 </script>
+
 <style scoped>
 .auth-page {
   min-height: 100vh;
@@ -89,6 +101,25 @@ function goLogin() {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* necessário para posicionar o botão Home */
+}
+
+/* Botão Home fixo no topo direito */
+.home-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.home-btn:hover {
+  opacity: 0.9;
 }
 
 .card {
@@ -128,7 +159,7 @@ input {
   font-size: 15px;
 }
 
-button {
+button[type="submit"] {
   width: 100%;
   height: 48px;
   margin-top: 12px;
