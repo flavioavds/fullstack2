@@ -68,7 +68,7 @@ java -version
 **Configurações do Back-end:**
 - **Porta:** 8081
 - **Context Path:** `/tasklist`
-- **Banco de Dados:** H2 (em memória)
+- **Banco de Dados:** PostgreSQL 
 - **Swagger UI:** Disponível após iniciar
 - **Auto-update do schema:** Habilitado
 
