@@ -15,7 +15,7 @@ Esta é uma aplicação completa **Fullstack** desenvolvida como parte do proces
 |------------|------------|----------|
 | **Back-end** | Java 21 + Spring Boot | Arquitetura Hexagonal, Gradle |
 | **Front-end** | Vue.js | Interface responsiva e intuitiva |
-| **Banco de Dados** | H2 (desenvolvimento) | Schema: `sansys_database` |
+| **Banco de Dados** | PostgreSQL | Schema: `sansys_database` |
 | **Documentação** | Swagger UI | OpenAPI 3.1.0 |
 | **Autenticação** | JWT (JSON Web Tokens) | Bearer token com refresh |
 
